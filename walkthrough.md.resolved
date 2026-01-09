@@ -1,0 +1,111 @@
+# Script de Usuarios de Prueba - Walkthrough
+
+## Resumen
+
+Se ha creado exitosamente un script de seeding para generar usuarios de prueba en el sistema de gestión de restaurante. El script permite crear automáticamente usuarios con diferentes roles (admin, cajero, mesero) con un solo comando.
+
+## Archivos Creados
+
+### 1. Script de Seeding
+**Archivo:** [seeds/users.js](file:///c:/Users/EH-PC/Desktop/proyectos/restaurante_react_nodejs/backend/seeds/users.js)
+
+El script incluye:
+- ✅ Conexión automática a la base de datos
+- ✅ Sincronización de modelos
+- ✅ Verificación de usuarios existentes
+- ✅ Creación de 3 usuarios de prueba con diferentes roles
+- ✅ Manejo de errores (usuarios duplicados, errores de conexión)
+- ✅ Mensajes informativos con emojis para mejor UX
+- ✅ Cierre automático de conexión
+
+### 2. Comando NPM
+**Archivo:** [package.json](file:///c:/Users/EH-PC/Desktop/proyectos/restaurante_react_nodejs/backend/package.json)
+
+Se agregó el comando:
+```json
+"seed:users": "node seeds/users.js"
+```
+
+### 3. Documentación
+**Archivo:** [README.md](file:///c:/Users/EH-PC/Desktop/proyectos/restaurante_react_nodejs/backend/README.md)
+
+Se actualizó la sección "Usuarios de Prueba" con:
+- Instrucciones claras de uso
+- Tabla con credenciales de acceso
+- Nota sobre verificación de usuarios existentes
+
+## Usuarios Creados
+
+El script crea los siguientes usuarios:
+
+| ID | Rol     | Nombre             | Usuario | Contraseña  | Estado |
+|----|---------|--------------------|---------| ------------|--------|
+| 1  | Admin   | Administrador      | admin   | admin123    | Activo |
+| 2  | Cajero  | Cajero Principal   | cajero  | cajero123   | Activo |
+| 3  | Mesero  | Mesero 1           | mesero  | mesero123   | Activo |
+
+## Uso del Script
+
+Para ejecutar el script:
+
+```bash
+cd backend
+npm run seed:users
+```
+
+## Verificación
+
+✅ **Script ejecutado exitosamente** con la siguiente salida:
+
+```
+🔄 Conectando a la base de datos...
+✅ Conexión establecida correctamente
+✅ Modelos sincronizados
+
+🌱 Creando usuarios de prueba...
+
+✅ Usuario creado: { id: 1, nombre: 'Administrador', usuario: 'admin', rol: 'admin' }
+✅ Usuario creado: { id: 2, nombre: 'Cajero Principal', usuario: 'cajero', rol: 'cajero' }
+✅ Usuario creado: { id: 3, nombre: 'Mesero 1', usuario: 'mesero', rol: 'mesero' }
+
+🎉 ¡Usuarios de prueba creados exitosamente!
+
+📋 Credenciales de acceso:
+   Admin    - Usuario: admin   | Password: admin123
+   Cajero   - Usuario: cajero  | Password: cajero123
+   Mesero   - Usuario: mesero  | Password: mesero123
+
+🔌 Conexión cerrada
+```
+
+## Características Destacadas
+
+### 🔒 Seguridad
+- Las contraseñas se hashean automáticamente usando bcrypt (configurado en el modelo User)
+- Los hooks de Sequelize aseguran que las contraseñas nunca se almacenen en texto plano
+
+### 🛡️ Manejo de Errores
+- Detecta usuarios duplicados (`SequelizeUniqueConstraintError`)
+- Verifica si ya existen usuarios antes de crear nuevos
+- Proporciona mensajes de error claros y específicos
+
+### 📊 Feedback Visual
+- Usa emojis para mejor legibilidad
+- Muestra progreso paso a paso
+- Tabla final con credenciales para fácil referencia
+
+## Próximos Pasos Sugeridos
+
+Para completar el setup inicial del sistema, podrías considerar:
+
+1. Crear script de seeding para áreas y mesas
+2. Crear script de seeding para productos de ejemplo
+3. Agregar comando para limpiar/resetear la base de datos
+4. Crear script maestro que ejecute todos los seeders
+
+## Notas Técnicas
+
+- El script usa ES modules (`import/export`)
+- Compatible con la configuración actual del proyecto (`"type": "module"`)
+- Cierra la conexión automáticamente al finalizar
+- Retorna códigos de salida apropiados (0 = éxito, 1 = error)

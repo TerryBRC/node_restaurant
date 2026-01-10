@@ -10,7 +10,7 @@ import {
     Check,
     X,
     AlertCircle,
-    UtensilsCrossed,
+    Utensils,
     Clock,
     Eye,
     EyeOff,
@@ -204,7 +204,7 @@ export default function MenuManagement() {
                         <div key={product.id} className={`card card-hover flex flex-col ${!product.disponible ? 'opacity-75' : ''}`}>
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-2 bg-primary-50 rounded-lg">
-                                    <UtensilsCrossed className="w-6 h-6 text-primary-600" />
+                                    <Utensils className="w-6 h-6 text-primary-600" />
                                 </div>
                                 <div className="flex gap-1">
                                     <button

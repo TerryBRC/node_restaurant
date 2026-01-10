@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { LogOut, Settings, Users, UtensilsCrossed, LayoutGrid } from 'lucide-react';
+import { LogOut, Settings, Users, Utensils, LayoutGrid } from 'lucide-react';
 
 export default function AdminDashboard() {
     const { user, logout } = useAuth();
@@ -24,7 +24,7 @@ export default function AdminDashboard() {
         {
             title: 'Menú y Productos',
             description: 'Gestionar productos y categorías',
-            icon: UtensilsCrossed,
+            icon: Utensils,
             path: '/admin/menu',
             color: 'bg-orange-500'
         },
@@ -71,7 +71,7 @@ export default function AdminDashboard() {
                             >
                                 <div className="flex items-start gap-4">
                                     <div className={`${item.color} p-3 rounded-lg`}>
-                                        <Icon className="w-6 h-6 text-white" />
+                                        {Icon && <Icon className="w-6 h-6 text-white" />}
                                     </div>
                                     <div className="flex-1">
                                         <h3 className="text-lg font-semibold text-gray-900 mb-1">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import axios from '../../services/axiosConfig';
+import axios from '../../services/api';
 import { io } from 'socket.io-client';
 import { Clock, CheckCircle, Flame, AlertCircle } from 'lucide-react';
 

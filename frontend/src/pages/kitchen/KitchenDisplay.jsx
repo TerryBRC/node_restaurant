@@ -50,7 +50,7 @@ const KitchenDisplay = () => {
 
     const fetchOrders = async () => {
         try {
-            const response = await axios.get('/api/kitchen/pending');
+            const response = await axios.get('/kitchen/pending');
             setOrders(response.data);
             setLoading(false);
         } catch (err) {
@@ -62,7 +62,7 @@ const KitchenDisplay = () => {
 
     const updateItemStatus = async (itemId, newJsonState) => {
         try {
-            await axios.post(`/api/kitchen/items/${itemId}/status`, { estado: newJsonState });
+            await axios.post(`/kitchen/items/${itemId}/status`, { estado: newJsonState });
             // State update handled by socket event 'kitchen-update'
         } catch (err) {
             console.error('Error updating item:', err);

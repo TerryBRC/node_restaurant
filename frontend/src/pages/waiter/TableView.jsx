@@ -11,6 +11,7 @@ import {
     Search,
     Filter
 } from 'lucide-react';
+import { io } from 'socket.io-client';
 
 export default function TableView() {
     const navigate = useNavigate();
@@ -31,6 +32,28 @@ export default function TableView() {
             fetchTables(selectedArea.id);
         }
     }, [selectedArea]);
+
+    useEffect(() => {
+        const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:3000');
+
+        socket.on('nueva-orden', () => {
+            fetchData();
+        });
+
+        socket.on('orden-actualizada', () => {
+            fetchData();
+        });
+
+        socket.on('mesa-liberada', () => {
+            fetchData();
+        });
+
+        socket.on('orden-transferida', () => {
+            fetchData();
+        });
+
+        return () => socket.disconnect();
+    }, []);
 
     const fetchData = async () => {
         try {
@@ -133,8 +156,8 @@ export default function TableView() {
                             key={area.id}
                             onClick={() => setSelectedArea(area)}
                             className={`px-4 py-2.5 rounded-full font-semibold transition-all whitespace-nowrap flex items-center gap-2 border ${selectedArea?.id === area.id
-                                    ? 'bg-primary-600 border-primary-600 text-white shadow-lg'
-                                    : 'bg-white border-gray-200 text-gray-600 hover:border-primary-300'
+                                ? 'bg-primary-600 border-primary-600 text-white shadow-lg'
+                                : 'bg-white border-gray-200 text-gray-600 hover:border-primary-300'
                                 }`}
                         >
                             <MapPin className={`w-4 h-4 ${selectedArea?.id === area.id ? 'text-white' : 'text-gray-400'}`} />
@@ -166,8 +189,8 @@ export default function TableView() {
                                         key={table.id}
                                         onClick={() => handleTableClick(table)}
                                         className={`group relative flex flex-col items-center justify-center p-5 rounded-2xl border-2 transition-all hover:scale-105 ${isOccupied
-                                                ? 'bg-white border-red-500 shadow-md ring-1 ring-red-500/20'
-                                                : 'bg-white border-green-200 hover:border-green-400 opacity-90'
+                                            ? 'bg-white border-red-500 shadow-md ring-1 ring-red-500/20'
+                                            : 'bg-white border-green-200 hover:border-green-400 opacity-90'
                                             }`}
                                     >
                                         <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-colors ${isOccupied ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'

@@ -13,6 +13,7 @@ import RestaurantConfig from './pages/admin/RestaurantConfig';
 import UserManagement from './pages/admin/UserManagement';
 import MenuManagement from './pages/admin/MenuManagement';
 import AreaTableSetup from './pages/admin/AreaTableSetup';
+import PrinterManagement from './pages/admin/PrinterManagement';
 
 // Mesero
 import TableView from './pages/waiter/TableView';
@@ -22,6 +23,7 @@ import OrderManagement from './pages/waiter/OrderManagement';
 import CashRegister from './pages/cashier/CashRegister';
 import PaymentProcessing from './pages/cashier/PaymentProcessing';
 import Reports from './pages/cashier/Reports';
+import KitchenDisplay from './pages/kitchen/KitchenDisplay';
 
 // Componente de ruta protegida
 const ProtectedRoute = ({ children, roles }) => {
@@ -66,6 +68,8 @@ const RoleBasedRedirect = () => {
       return <Navigate to="/cajero/caja" replace />;
     case 'mesero':
       return <Navigate to="/mesero/mesas" replace />;
+    case 'cocinero':
+      return <Navigate to="/cocina" replace />;
     default:
       return <Navigate to="/login" replace />;
   }
@@ -90,6 +94,7 @@ function App() {
             <Route path="/admin/usuarios" element={<ProtectedRoute roles={['admin']}><UserManagement /></ProtectedRoute>} />
             <Route path="/admin/menu" element={<ProtectedRoute roles={['admin']}><MenuManagement /></ProtectedRoute>} />
             <Route path="/admin/areas-mesas" element={<ProtectedRoute roles={['admin']}><AreaTableSetup /></ProtectedRoute>} />
+            <Route path="/admin/impresoras" element={<ProtectedRoute roles={['admin']}><PrinterManagement /></ProtectedRoute>} />
 
             {/* Rutas de Mesero */}
             <Route path="/mesero/mesas" element={<ProtectedRoute roles={['mesero', 'admin']}><TableView /></ProtectedRoute>} />
@@ -100,6 +105,9 @@ function App() {
             <Route path="/cajero/caja" element={<ProtectedRoute roles={['cajero', 'admin']}><CashRegister /></ProtectedRoute>} />
             <Route path="/cajero/pagos" element={<ProtectedRoute roles={['cajero', 'admin']}><PaymentProcessing /></ProtectedRoute>} />
             <Route path="/cajero/reportes" element={<ProtectedRoute roles={['cajero', 'admin']}><Reports /></ProtectedRoute>} />
+
+            {/* Rutas de Cocina */}
+            <Route path="/cocina" element={<ProtectedRoute roles={['cocinero', 'admin']}><KitchenDisplay /></ProtectedRoute>} />
           </Route>
 
           {/* Ruta 404 */}

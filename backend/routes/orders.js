@@ -134,6 +134,19 @@ router.post('/', authenticate, authorize('mesero', 'cajero', 'admin'), requireOp
                 });
             }
 
+            // Validar stock
+            if (producto.controlarStock && producto.stock < item.cantidad) {
+                await nuevaOrden.destroy();
+                return res.status(400).json({
+                    error: `Stock insuficiente para "${producto.nombre}". Disponible: ${producto.stock}`
+                });
+            }
+
+            // Descontar stock
+            if (producto.controlarStock) {
+                await producto.update({ stock: producto.stock - item.cantidad });
+            }
+
             const itemSubtotal = producto.precio * item.cantidad;
             subtotal += itemSubtotal;
 
@@ -212,6 +225,18 @@ router.post('/:id/items', authenticate, authorize('mesero', 'cajero', 'admin'), 
             const producto = await Product.findByPk(item.productoId);
             if (!producto || !producto.disponible) {
                 continue;
+            }
+
+            // Validar stock
+            if (producto.controlarStock && producto.stock < item.cantidad) {
+                return res.status(400).json({
+                    error: `Stock insuficiente para "${producto.nombre}". Disponible: ${producto.stock}`
+                });
+            }
+
+            // Descontar stock
+            if (producto.controlarStock) {
+                await producto.update({ stock: producto.stock - item.cantidad });
             }
 
             const itemSubtotal = producto.precio * item.cantidad;
@@ -392,6 +417,16 @@ router.post('/items/:itemId/cancelar', authenticate, authorize('mesero', 'cajero
             notas,
             cantidadCancelada: cantidadCancelar
         });
+
+        // Devolver stock si aplica
+        const items = Array.isArray(item) ? item : [item]; // Por si acaso manejo múltiple (futuro)
+
+        // Cargar producto para verificar si controla stock
+        const producto = await Product.findByPk(item.productoId);
+
+        if (producto && producto.controlarStock) {
+            await producto.update({ stock: producto.stock + cantidadCancelar });
+        }
 
         if (cantidadCancelar === item.cantidad) {
             // Cancelar item completo

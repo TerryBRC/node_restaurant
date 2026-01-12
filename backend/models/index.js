@@ -3,12 +3,18 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Configurar Sequelize con MySQL
+// Configurar Sequelize
+const isTest = process.env.NODE_ENV === 'test';
+
 export const sequelize = new Sequelize(
     process.env.DB_NAME || 'restaurant_db',
     process.env.DB_USER || 'root',
     process.env.DB_PASSWORD || '',
-    {
+    isTest ? {
+        dialect: 'sqlite',
+        storage: ':memory:',
+        logging: false
+    } : {
         host: process.env.DB_HOST || 'localhost',
         port: process.env.DB_PORT || 3306,
         dialect: 'mysql',
@@ -38,6 +44,7 @@ import CashRegister from './CashRegister.js';
 import Payment from './Payment.js';
 import TableClosure from './TableClosure.js';
 import OrderCancellation from './OrderCancellation.js';
+import Printer from './Printer.js';
 
 // Inicializar modelos
 const models = {
@@ -51,7 +58,8 @@ const models = {
     CashRegister: CashRegister(sequelize),
     Payment: Payment(sequelize),
     TableClosure: TableClosure(sequelize),
-    OrderCancellation: OrderCancellation(sequelize)
+    OrderCancellation: OrderCancellation(sequelize),
+    Printer: Printer(sequelize)
 };
 
 // Definir asociaciones
@@ -133,5 +141,7 @@ export {
     CashRegisterModel as CashRegister,
     PaymentModel as Payment,
     TableClosureModel as TableClosure,
-    OrderCancellationModel as OrderCancellation
+    TableClosureModel as TableClosure,
+    OrderCancellationModel as OrderCancellation,
+    Printer as PrinterModel
 };

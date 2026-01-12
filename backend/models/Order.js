@@ -69,7 +69,7 @@ export default (sequelize) => {
     }, {
         tableName: 'ordenes',
         hooks: {
-            beforeCreate: async (order) => {
+            beforeValidate: async (order) => {
                 // Generar número de orden único
                 if (!order.numeroOrden) {
                     const timestamp = Date.now();

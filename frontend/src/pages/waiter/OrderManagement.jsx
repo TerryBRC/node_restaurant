@@ -23,6 +23,7 @@ import {
     Utensils,
     X
 } from 'lucide-react';
+import { io } from 'socket.io-client';
 
 export default function OrderManagement() {
     const { id } = useParams();
@@ -75,10 +76,45 @@ export default function OrderManagement() {
         };
 
         fetchInitialData();
-    }, [id, mesaId]);
+
+        const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:3000');
+
+        socket.on('orden-actualizada', (updatedOrder) => {
+            if (id && updatedOrder.id === parseInt(id)) {
+                setOrder(updatedOrder);
+            } else if (mesaId && updatedOrder.mesaId === parseInt(mesaId)) {
+                // Si estamos creando orden y alguien más la crea/actualiza para esta mesa
+                // Podríamos redirigir o actualizar. Por ahora, si hay ID en URL es suficiente.
+            }
+        });
+
+        socket.on('kitchen-update', (data) => {
+            if (order && data.orderId === order.id) {
+                // Refetch easier than deep merge for now
+                orderService.getById(order.id).then(res => setOrder(res.data));
+            }
+        });
+
+        socket.on('item-cancelado', (data) => {
+            if (order && data.ordenId === order.id) {
+                orderService.getById(order.id).then(res => setOrder(res.data));
+            }
+        });
+
+        return () => socket.disconnect();
+    }, [id, mesaId, order]);
 
     const addToCart = (product) => {
+        if (product.controlarStock && product.stock <= 0) return; // No permitir si no hay stock
+
         const existingItem = cart.find(item => item.productoId === product.id);
+        const currentQty = existingItem ? existingItem.cantidad : 0;
+
+        if (product.controlarStock && currentQty + 1 > product.stock) {
+            alert(`Solo quedan ${product.stock} unidades de ${product.nombre}`);
+            return;
+        }
+
         if (existingItem) {
             setCart(cart.map(item =>
                 item.productoId === product.id
@@ -97,9 +133,16 @@ export default function OrderManagement() {
     };
 
     const updateQuantity = (productId, delta) => {
+        const product = products.find(p => p.id === productId);
         setCart(cart.map(item => {
             if (item.productoId === productId) {
                 const newQty = Math.max(1, item.cantidad + delta);
+
+                if (delta > 0 && product && product.controlarStock && newQty > product.stock) {
+                    // No permitir subir más allá del stock
+                    return item;
+                }
+
                 return { ...item, cantidad: newQty };
             }
             return item;
@@ -218,8 +261,8 @@ export default function OrderManagement() {
                                     key={cat}
                                     onClick={() => setSelectedCategory(cat)}
                                     className={`px-3 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap border transition-colors ${selectedCategory === cat
-                                            ? 'bg-primary-600 border-primary-600 text-white'
-                                            : 'bg-white border-gray-200 text-gray-600'
+                                        ? 'bg-primary-600 border-primary-600 text-white'
+                                        : 'bg-white border-gray-200 text-gray-600'
                                         }`}
                                 >
                                     {cat}
@@ -240,7 +283,15 @@ export default function OrderManagement() {
                                     <span className="text-[10px] font-bold text-primary-500 uppercase">{product.categoria}</span>
                                     <h3 className="font-bold text-gray-900 text-sm line-clamp-2 mt-0.5">{product.nombre}</h3>
                                 </div>
-                                <div className="mt-3 font-black text-primary-600">${parseFloat(product.precio).toFixed(2)}</div>
+                                <div className="mt-3 font-black text-primary-600 flex justify-between items-end">
+                                    <span>${parseFloat(product.precio).toFixed(2)}</span>
+                                    {product.controlarStock && (
+                                        <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-bold ${product.stock === 0 ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600'
+                                            }`}>
+                                            {product.stock === 0 ? 'AGOTADO' : `Stock: ${product.stock}`}
+                                        </span>
+                                    )}
+                                </div>
                             </button>
                         ))}
                     </div>
@@ -282,8 +333,8 @@ export default function OrderManagement() {
                                             {item.notas && <p className="text-xs text-gray-500 italic mt-0.5 ml-7">"{item.notas}"</p>}
                                             <div className="flex items-center gap-2 mt-1 ml-7">
                                                 <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase ${item.estado === 'pendiente' ? 'bg-orange-50 text-orange-600 border border-orange-100' :
-                                                        item.estado === 'enviado_cocina' ? 'bg-blue-50 text-blue-600 border border-blue-100' :
-                                                            'bg-green-50 text-green-600 border border-green-100'
+                                                    item.estado === 'enviado_cocina' ? 'bg-blue-50 text-blue-600 border border-blue-100' :
+                                                        'bg-green-50 text-green-600 border border-green-100'
                                                     }`}>
                                                     {item.estado.replace('_', ' ')}
                                                 </span>

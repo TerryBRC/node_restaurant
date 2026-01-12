@@ -12,7 +12,9 @@ import {
     LogOut,
     Menu,
     X,
-    ClipboardList
+    ClipboardList,
+    Flame,
+    Printer
 } from 'lucide-react';
 
 export default function Sidebar({ isOpen, setIsOpen }) {
@@ -23,6 +25,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         { to: '/admin/usuarios', icon: Users, label: 'Usuarios' },
         { to: '/admin/menu', icon: Utensils, label: 'Menú' },
         { to: '/admin/areas-mesas', icon: LayoutGrid, label: 'Áreas y Mesas' },
+        { to: '/admin/impresoras', icon: Printer, label: 'Impresoras' },
         { to: '/admin/configuracion', icon: Settings, label: 'Configuración' },
     ];
 
@@ -36,11 +39,16 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         { to: '/cajero/reportes', icon: BarChart3, label: 'Reportes' },
     ];
 
+    const kitchenLinks = [
+        { to: '/cocina', icon: Flame, label: 'Cocina' },
+    ];
+
     const getLinks = () => {
         if (!user) return [];
-        if (user.rol === 'admin') return [...adminLinks, ...waiterLinks, ...cashierLinks];
+        if (user.rol === 'admin') return [...adminLinks, ...waiterLinks, ...cashierLinks, ...kitchenLinks];
         if (user.rol === 'mesero') return waiterLinks;
         if (user.rol === 'cajero') return cashierLinks;
+        if (user.rol === 'cocinero') return kitchenLinks;
         return [];
     };
 

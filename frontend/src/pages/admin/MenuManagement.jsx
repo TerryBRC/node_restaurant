@@ -36,7 +36,9 @@ export default function MenuManagement() {
         categoria: '',
         requierePreparacion: true,
         tiempoPreparacion: '',
-        disponible: true
+        disponible: true,
+        stock: 0,
+        controlarStock: true
     });
 
     useEffect(() => {
@@ -71,7 +73,9 @@ export default function MenuManagement() {
                 categoria: product.categoria || '',
                 requierePreparacion: product.requierePreparacion,
                 tiempoPreparacion: product.tiempoPreparacion || '',
-                disponible: product.disponible
+                disponible: product.disponible,
+                stock: product.stock || 0,
+                controlarStock: product.controlarStock !== undefined ? product.controlarStock : true
             });
         } else {
             setCurrentProduct(null);
@@ -82,7 +86,9 @@ export default function MenuManagement() {
                 categoria: '',
                 requierePreparacion: true,
                 tiempoPreparacion: '',
-                disponible: true
+                disponible: true,
+                stock: 0,
+                controlarStock: true
             });
         }
         setIsModalOpen(true);
@@ -238,6 +244,19 @@ export default function MenuManagement() {
                                 {product.descripcion && (
                                     <p className="text-sm text-gray-600 mb-4 line-clamp-2">{product.descripcion}</p>
                                 )}
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                    {product.controlarStock ? (
+                                        <span className={`text-xs px-2 py-1 rounded-full font-bold ${product.stock > 10 ? 'bg-green-100 text-green-700' :
+                                            product.stock > 0 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'
+                                            }`}>
+                                            Stock: {product.stock}
+                                        </span>
+                                    ) : (
+                                        <span className="text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-700 font-bold">
+                                            Stock Infinito
+                                        </span>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">

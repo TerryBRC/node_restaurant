@@ -18,6 +18,8 @@ import cashRegisterRoutes from './routes/cashRegister.js';
 import paymentRoutes from './routes/payments.js';
 import reportRoutes from './routes/reports.js';
 import printRoutes from './routes/print.js';
+import kitchenRoutes from './routes/kitchen.js';
+import printerRoutes from './routes/printers.js';
 
 dotenv.config();
 
@@ -51,6 +53,8 @@ app.use('/api/cash-register', cashRegisterRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/print', printRoutes);
+app.use('/api/kitchen', kitchenRoutes);
+app.use('/api/printers', printerRoutes);
 
 // Ruta de prueba
 app.get('/api/health', (req, res) => {
@@ -82,20 +86,23 @@ io.on('connection', (socket) => {
 });
 
 // Exportar io para usar en controladores
-export { io };
+// Exportar para tests y controladores
+export { app, httpServer, io };
 
 // Sincronizar base de datos e iniciar servidor
 const PORT = process.env.PORT || 3000;
 
-sequelize.sync({ alter: false })
-    .then(() => {
-        console.log('✓ Base de datos conectada y sincronizada');
-        httpServer.listen(PORT, () => {
-            console.log(`✓ Servidor corriendo en puerto ${PORT}`);
-            console.log(`✓ Ambiente: ${process.env.NODE_ENV}`);
+if (process.env.NODE_ENV !== 'test') {
+    sequelize.sync({ alter: false })
+        .then(() => {
+            console.log('✓ Base de datos conectada y sincronizada');
+            httpServer.listen(PORT, () => {
+                console.log(`✓ Servidor corriendo en puerto ${PORT}`);
+                console.log(`✓ Ambiente: ${process.env.NODE_ENV}`);
+            });
+        })
+        .catch(err => {
+            console.error('✗ Error al conectar con la base de datos:', err);
+            process.exit(1);
         });
-    })
-    .catch(err => {
-        console.error('✗ Error al conectar con la base de datos:', err);
-        process.exit(1);
-    });
+}

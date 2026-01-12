@@ -22,7 +22,7 @@ export default (sequelize) => {
             allowNull: false
         },
         rol: {
-            type: DataTypes.ENUM('admin', 'cajero', 'mesero'),
+            type: DataTypes.ENUM('admin', 'cajero', 'mesero', 'cocinero'),
             allowNull: false,
             defaultValue: 'mesero'
         },

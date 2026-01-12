@@ -130,4 +130,13 @@ export const printService = {
     cancellation: (data) => api.post('/print/cancelacion', data),
 };
 
+// Servicios de gestión de impresoras
+export const printerService = {
+    getAll: () => api.get('/printers'),
+    getById: (id) => api.get(`/printers/${id}`),
+    create: (data) => api.post('/printers', data),
+    update: (id, data) => api.put(`/printers/${id}`, data),
+    delete: (id) => api.delete(`/printers/${id}`),
+};
+
 export default api;

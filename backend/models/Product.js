@@ -44,6 +44,19 @@ export default (sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: true,
             comment: 'Tiempo estimado en minutos'
+        },
+        stock: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0,
+            validate: {
+                min: 0
+            }
+        },
+        controlarStock: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true,
+            comment: 'Si activado, descuenta stock al vender'
         }
     }, {
         tableName: 'productos'

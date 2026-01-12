@@ -65,7 +65,7 @@ router.get('/:id', authenticate, async (req, res, next) => {
 // Crear producto (solo admin)
 router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
     try {
-        const { nombre, descripcion, precio, categoria, requierePreparacion, tiempoPreparacion } = req.body;
+        const { nombre, descripcion, precio, categoria, requierePreparacion, tiempoPreparacion, stock, controlarStock } = req.body;
 
         if (!nombre || !precio) {
             return res.status(400).json({
@@ -79,7 +79,9 @@ router.post('/', authenticate, authorize('admin'), async (req, res, next) => {
             precio,
             categoria,
             requierePreparacion,
-            tiempoPreparacion
+            tiempoPreparacion,
+            stock: stock || 0,
+            controlarStock: controlarStock !== undefined ? controlarStock : true
         });
 
         res.status(201).json({
@@ -100,7 +102,7 @@ router.put('/:id', authenticate, authorize('admin'), async (req, res, next) => {
             return res.status(404).json({ error: 'Producto no encontrado' });
         }
 
-        const { nombre, descripcion, precio, categoria, disponible, requierePreparacion, tiempoPreparacion } = req.body;
+        const { nombre, descripcion, precio, categoria, disponible, requierePreparacion, tiempoPreparacion, stock, controlarStock } = req.body;
 
         await producto.update({
             ...(nombre && { nombre }),
@@ -109,7 +111,9 @@ router.put('/:id', authenticate, authorize('admin'), async (req, res, next) => {
             ...(categoria !== undefined && { categoria }),
             ...(disponible !== undefined && { disponible }),
             ...(requierePreparacion !== undefined && { requierePreparacion }),
-            ...(tiempoPreparacion !== undefined && { tiempoPreparacion })
+            ...(tiempoPreparacion !== undefined && { tiempoPreparacion }),
+            ...(stock !== undefined && { stock }),
+            ...(controlarStock !== undefined && { controlarStock })
         });
 
         res.json({

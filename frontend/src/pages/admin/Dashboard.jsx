@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { LogOut, Settings, Users, Utensils, LayoutGrid } from 'lucide-react';
+import { LogOut, Settings, Users, Utensils, LayoutGrid, Printer, Table, Calculator, BarChart3, Flame, ClipboardList } from 'lucide-react';
 
 export default function AdminDashboard() {
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
 
     const menuItems = [
@@ -34,80 +34,99 @@ export default function AdminDashboard() {
             icon: LayoutGrid,
             path: '/admin/areas-mesas',
             color: 'bg-purple-500'
+        },
+        {
+            title: 'Gestión de Impresoras',
+            description: 'Configurar impresoras y ruteo',
+            icon: Printer,
+            path: '/admin/impresoras',
+            color: 'bg-indigo-500'
         }
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Header */}
-            <header className="bg-white shadow-sm border-b border-gray-200">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Panel de Administración</h1>
-                            <p className="text-sm text-gray-600 mt-1">Bienvenido, {user?.nombre}</p>
-                        </div>
+        <div className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {menuItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
                         <button
-                            onClick={logout}
-                            className="btn btn-secondary flex items-center gap-2"
+                            key={item.path}
+                            onClick={() => navigate(item.path)}
+                            className="card card-hover text-left p-6 transition-all duration-200 hover:scale-105"
                         >
-                            <LogOut className="w-4 h-4" />
-                            Cerrar Sesión
-                        </button>
-                    </div>
-                </div>
-            </header>
-
-            {/* Main Content */}
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {menuItems.map((item) => {
-                        const Icon = item.icon;
-                        return (
-                            <button
-                                key={item.path}
-                                onClick={() => navigate(item.path)}
-                                className="card card-hover text-left p-6 transition-all duration-200 hover:scale-105"
-                            >
-                                <div className="flex items-start gap-4">
-                                    <div className={`${item.color} p-3 rounded-lg`}>
-                                        {Icon && <Icon className="w-6 h-6 text-white" />}
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                                            {item.title}
-                                        </h3>
-                                        <p className="text-sm text-gray-600">
-                                            {item.description}
-                                        </p>
-                                    </div>
+                            <div className="flex items-start gap-4">
+                                <div className={`${item.color} p-3 rounded-lg`}>
+                                    {Icon && <Icon className="w-6 h-6 text-white" />}
                                 </div>
-                            </button>
-                        );
-                    })}
+                                <div className="flex-1">
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                                        {item.title}
+                                    </h3>
+                                    <p className="text-sm text-gray-600">
+                                        {item.description}
+                                    </p>
+                                </div>
+                            </div>
+                        </button>
+                    );
+                })}
+            </div>
+
+            <h2 className="text-xl font-bold text-gray-900 mt-8 mb-4">Módulos Operativos</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <button onClick={() => navigate('/mesero/mesas')} className="card card-hover text-left p-6 hover:scale-105 transition-all">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-teal-500 p-3 rounded-lg"><Table className="w-6 h-6 text-white" /></div>
+                        <div><h3 className="font-bold text-gray-900">Vista de Mesas</h3><p className="text-sm text-gray-500">Gestión de mesas y pedidos</p></div>
+                    </div>
+                </button>
+                <button onClick={() => navigate('/cajero/caja')} className="card card-hover text-left p-6 hover:scale-105 transition-all">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-pink-500 p-3 rounded-lg"><Calculator className="w-6 h-6 text-white" /></div>
+                        <div><h3 className="font-bold text-gray-900">Caja Registradora</h3><p className="text-sm text-gray-500">Control de caja y movimientos</p></div>
+                    </div>
+                </button>
+                <button onClick={() => navigate('/cajero/pagos')} className="card card-hover text-left p-6 hover:scale-105 transition-all">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-emerald-500 p-3 rounded-lg"><ClipboardList className="w-6 h-6 text-white" /></div>
+                        <div><h3 className="font-bold text-gray-900">Cobros y Pagos</h3><p className="text-sm text-gray-500">Procesar pagos de órdenes</p></div>
+                    </div>
+                </button>
+                <button onClick={() => navigate('/cajero/reportes')} className="card card-hover text-left p-6 hover:scale-105 transition-all">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-amber-500 p-3 rounded-lg"><BarChart3 className="w-6 h-6 text-white" /></div>
+                        <div><h3 className="font-bold text-gray-900">Reportes</h3><p className="text-sm text-gray-500">Ventas y estadísticas</p></div>
+                    </div>
+                </button>
+                <button onClick={() => navigate('/cocina')} className="card card-hover text-left p-6 hover:scale-105 transition-all">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-red-500 p-3 rounded-lg"><Flame className="w-6 h-6 text-white" /></div>
+                        <div><h3 className="font-bold text-gray-900">Cocina (KDS)</h3><p className="text-sm text-gray-500">Pantalla de comandas</p></div>
+                    </div>
+                </button>
+            </div>
+
+            {/* Info Cards */}
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="card bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+                    <h4 className="text-sm font-medium opacity-90">Sistema</h4>
+                    <p className="text-2xl font-bold mt-2">Activo</p>
+                    <p className="text-sm opacity-75 mt-1">Funcionando correctamente</p>
                 </div>
 
-                {/* Info Cards */}
-                <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="card bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-                        <h4 className="text-sm font-medium opacity-90">Sistema</h4>
-                        <p className="text-2xl font-bold mt-2">Activo</p>
-                        <p className="text-sm opacity-75 mt-1">Funcionando correctamente</p>
-                    </div>
-
-                    <div className="card bg-gradient-to-br from-green-500 to-green-600 text-white">
-                        <h4 className="text-sm font-medium opacity-90">Rol</h4>
-                        <p className="text-2xl font-bold mt-2">Administrador</p>
-                        <p className="text-sm opacity-75 mt-1">Acceso completo</p>
-                    </div>
-
-                    <div className="card bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-                        <h4 className="text-sm font-medium opacity-90">Usuario</h4>
-                        <p className="text-2xl font-bold mt-2">{user?.usuario}</p>
-                        <p className="text-sm opacity-75 mt-1">{user?.nombre}</p>
-                    </div>
+                <div className="card bg-gradient-to-br from-green-500 to-green-600 text-white">
+                    <h4 className="text-sm font-medium opacity-90">Rol</h4>
+                    <p className="text-2xl font-bold mt-2">Administrador</p>
+                    <p className="text-sm opacity-75 mt-1">Acceso completo</p>
                 </div>
-            </main>
+
+                <div className="card bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+                    <h4 className="text-sm font-medium opacity-90">Usuario</h4>
+                    <p className="text-2xl font-bold mt-2">{user?.usuario}</p>
+                    <p className="text-sm opacity-75 mt-1">{user?.nombre}</p>
+                </div>
+            </div>
         </div>
     );
 }

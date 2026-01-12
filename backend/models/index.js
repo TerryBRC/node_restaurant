@@ -74,7 +74,8 @@ const {
     CashRegister: CashRegisterModel,
     Payment: PaymentModel,
     TableClosure: TableClosureModel,
-    OrderCancellation: OrderCancellationModel
+    OrderCancellation: OrderCancellationModel,
+    Printer: PrinterModel
 } = models;
 
 // Area - Table
@@ -141,7 +142,6 @@ export {
     CashRegisterModel as CashRegister,
     PaymentModel as Payment,
     TableClosureModel as TableClosure,
-    TableClosureModel as TableClosure,
     OrderCancellationModel as OrderCancellation,
-    Printer as PrinterModel
+    PrinterModel as Printer
 };

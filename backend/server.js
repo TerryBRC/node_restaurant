@@ -93,7 +93,7 @@ export { app, httpServer, io };
 const PORT = process.env.PORT || 3000;
 
 if (process.env.NODE_ENV !== 'test') {
-    sequelize.sync({ alter: false })
+    sequelize.sync({ alter: true })
         .then(() => {
             console.log('✓ Base de datos conectada y sincronizada');
             httpServer.listen(PORT, () => {
